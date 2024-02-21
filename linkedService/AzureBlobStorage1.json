@@ -1,0 +1,16 @@
+{
+	"name": "AzureBlobStorage1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"serviceEndpoint": "https://sammagnusst1.blob.core.windows.net/",
+			"tenant": "95b85dbe-7a5f-4265-8a98-f36e520534ee",
+			"servicePrincipalId": "b8b388a6-5be6-4d48-a4e7-2e8db3bc6cde",
+			"servicePrincipalCredentialType": "ServicePrincipalKey",
+			"accountKind": "StorageV2",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEZBMjk3QjE2LTQ3RDMtNDdFQi1CNDhBLUREMzdFMzNFQkM5M18yY2JlNTA4NS1jNzczLTRlN2UtYTdkZS1lMjc0OGJhMDdiMTkiDQp9"
+		}
+	}
+}

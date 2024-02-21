@@ -1,0 +1,25 @@
+{
+	"name": "schemacopy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sqldblinked1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"sourcetable": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().sourcetable",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

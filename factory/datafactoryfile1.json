@@ -1,0 +1,15 @@
+{
+	"name": "datafactoryfile1",
+	"location": "centralus",
+	"identity": {
+		"type": "SystemAssigned,UserAssigned",
+		"principalId": "37c0b33d-36d5-4ef5-8128-3b72c4497c13",
+		"tenantId": "95b85dbe-7a5f-4265-8a98-f36e520534ee",
+		"userAssignedIdentities": {
+			"/subscriptions/e70f1755-b472-43ec-88ec-81172087fbf1/resourcegroups/ResouceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adfusermanagedIdentity": {
+				"clientId": "ce1e7d3c-b4b4-472b-ac67-a19e5b3898d3",
+				"principalId": "eb495aa3-e5c8-4d81-b275-b0b84fde2def"
+			}
+		}
+	}
+}
