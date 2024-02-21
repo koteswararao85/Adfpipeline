@@ -1,0 +1,167 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "datafactoryfile1"
+		},
+		"AzureBlobStorage1_servicePrincipalCredential": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalCredential' of 'AzureBlobStorage1'"
+		},
+		"AzureDatabricks1_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
+		},
+		"azauresqldb2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'azauresqldb2'"
+		},
+		"azureLinkedSource1_servicePrincipalCredential": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalCredential' of 'azureLinkedSource1'"
+		},
+		"linkedService1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'linkedService1'"
+		},
+		"metadatamapping_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'metadatamapping'"
+		},
+		"sqldblinked1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'sqldblinked1'"
+		},
+		"storedinkedserice_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'storedinkedserice'"
+		},
+		"AzureBlobStorage1_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://sammagnusst1.blob.core.windows.net/"
+		},
+		"AzureBlobStorage1_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "95b85dbe-7a5f-4265-8a98-f36e520534ee"
+		},
+		"AzureBlobStorage1_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "b8b388a6-5be6-4d48-a4e7-2e8db3bc6cde"
+		},
+		"azureLinkedSource1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://sammagnusst1.dfs.core.windows.net/"
+		},
+		"azureLinkedSource1_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "95b85dbe-7a5f-4265-8a98-f36e520534ee"
+		},
+		"azureLinkedSource1_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "b8b388a6-5be6-4d48-a4e7-2e8db3bc6cde"
+		},
+		"linkedserviceManagedidentity_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://sammagnusst1.blob.core.windows.net/"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "datafactoryfile1_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStorage1_servicePrincipalCredential": {
+						"value": "[parameters('AzureBlobStorage1_servicePrincipalCredential')]"
+					},
+					"AzureDatabricks1_accessToken": {
+						"value": "[parameters('AzureDatabricks1_accessToken')]"
+					},
+					"azauresqldb2_connectionString": {
+						"value": "[parameters('azauresqldb2_connectionString')]"
+					},
+					"azureLinkedSource1_servicePrincipalCredential": {
+						"value": "[parameters('azureLinkedSource1_servicePrincipalCredential')]"
+					},
+					"linkedService1_connectionString": {
+						"value": "[parameters('linkedService1_connectionString')]"
+					},
+					"metadatamapping_connectionString": {
+						"value": "[parameters('metadatamapping_connectionString')]"
+					},
+					"sqldblinked1_connectionString": {
+						"value": "[parameters('sqldblinked1_connectionString')]"
+					},
+					"storedinkedserice_connectionString": {
+						"value": "[parameters('storedinkedserice_connectionString')]"
+					},
+					"AzureBlobStorage1_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('AzureBlobStorage1_properties_typeProperties_serviceEndpoint')]"
+					},
+					"AzureBlobStorage1_properties_typeProperties_tenant": {
+						"value": "[parameters('AzureBlobStorage1_properties_typeProperties_tenant')]"
+					},
+					"AzureBlobStorage1_properties_typeProperties_servicePrincipalId": {
+						"value": "[parameters('AzureBlobStorage1_properties_typeProperties_servicePrincipalId')]"
+					},
+					"azureLinkedSource1_properties_typeProperties_url": {
+						"value": "[parameters('azureLinkedSource1_properties_typeProperties_url')]"
+					},
+					"azureLinkedSource1_properties_typeProperties_tenant": {
+						"value": "[parameters('azureLinkedSource1_properties_typeProperties_tenant')]"
+					},
+					"azureLinkedSource1_properties_typeProperties_servicePrincipalId": {
+						"value": "[parameters('azureLinkedSource1_properties_typeProperties_servicePrincipalId')]"
+					},
+					"linkedserviceManagedidentity_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('linkedserviceManagedidentity_properties_typeProperties_serviceEndpoint')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "datafactoryfile1_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'datafactoryfile1_ArmTemplate_0')]"
+			]
+		}
+	]
+}

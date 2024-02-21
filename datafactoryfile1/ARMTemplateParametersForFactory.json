@@ -1,0 +1,54 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "datafactoryfile1"
+		},
+		"AzureBlobStorage1_servicePrincipalCredential": {
+			"value": ""
+		},
+		"AzureDatabricks1_accessToken": {
+			"value": ""
+		},
+		"azauresqldb2_connectionString": {
+			"value": ""
+		},
+		"azureLinkedSource1_servicePrincipalCredential": {
+			"value": ""
+		},
+		"linkedService1_connectionString": {
+			"value": ""
+		},
+		"metadatamapping_connectionString": {
+			"value": ""
+		},
+		"sqldblinked1_connectionString": {
+			"value": ""
+		},
+		"storedinkedserice_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage1_properties_typeProperties_serviceEndpoint": {
+			"value": "https://sammagnusst1.blob.core.windows.net/"
+		},
+		"AzureBlobStorage1_properties_typeProperties_tenant": {
+			"value": "95b85dbe-7a5f-4265-8a98-f36e520534ee"
+		},
+		"AzureBlobStorage1_properties_typeProperties_servicePrincipalId": {
+			"value": "b8b388a6-5be6-4d48-a4e7-2e8db3bc6cde"
+		},
+		"azureLinkedSource1_properties_typeProperties_url": {
+			"value": "https://sammagnusst1.dfs.core.windows.net/"
+		},
+		"azureLinkedSource1_properties_typeProperties_tenant": {
+			"value": "95b85dbe-7a5f-4265-8a98-f36e520534ee"
+		},
+		"azureLinkedSource1_properties_typeProperties_servicePrincipalId": {
+			"value": "b8b388a6-5be6-4d48-a4e7-2e8db3bc6cde"
+		},
+		"linkedserviceManagedidentity_properties_typeProperties_serviceEndpoint": {
+			"value": "https://sammagnusst1.blob.core.windows.net/"
+		}
+	}
+}
