@@ -1,0 +1,30 @@
+{
+	"name": "trigger2",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "copydatafile",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"source": "@triggerBody.folderpath",
+					"target": "@triggerBody.fileName"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/source/blobs/test/azure_notes",
+			"blobPathEndsWith": "txt",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/e70f1755-b472-43ec-88ec-81172087fbf1/resourceGroups/ResouceGroup1/providers/Microsoft.Storage/storageAccounts/sammagnusst1",
+			"events": [
+				"Microsoft.Storage.BlobCreated",
+				"Microsoft.Storage.BlobDeleted"
+			]
+		}
+	}
+}
