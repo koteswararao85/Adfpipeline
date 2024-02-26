@@ -1,0 +1,29 @@
+{
+	"name": "trigger3",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "copydatafile",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"source": "@triggerBody.folderPath",
+					"target": "@triggerBody.fileName"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/source/blobs/dbmetadata",
+			"blobPathEndsWith": "xlsx",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/e70f1755-b472-43ec-88ec-81172087fbf1/resourceGroups/ResouceGroup1/providers/Microsoft.Storage/storageAccounts/sammagnusst1",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
