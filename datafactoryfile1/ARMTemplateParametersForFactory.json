@@ -49,6 +49,24 @@
 		},
 		"linkedserviceManagedidentity_properties_typeProperties_serviceEndpoint": {
 			"value": "https://sammagnusst1.blob.core.windows.net/"
+		},
+		"trigger2_properties_copydatafile_parameters_source": {
+			"value": "@triggerBody.folderpath"
+		},
+		"trigger2_properties_copydatafile_parameters_target": {
+			"value": "@triggerBody.fileName"
+		},
+		"trigger2_properties_typeProperties_scope": {
+			"value": "/subscriptions/e70f1755-b472-43ec-88ec-81172087fbf1/resourceGroups/ResouceGroup1/providers/Microsoft.Storage/storageAccounts/sammagnusst1"
+		},
+		"trigger3_properties_copydatafile_parameters_source": {
+			"value": "@triggerBody.folderPath"
+		},
+		"trigger3_properties_copydatafile_parameters_target": {
+			"value": "@triggerBody.fileName"
+		},
+		"trigger3_properties_typeProperties_scope": {
+			"value": "/subscriptions/e70f1755-b472-43ec-88ec-81172087fbf1/resourceGroups/ResouceGroup1/providers/Microsoft.Storage/storageAccounts/sammagnusst1"
 		}
 	}
 }

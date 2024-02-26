@@ -6,12 +6,140 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "datafactoryfile1"
+		},
+		"trigger2_properties_copydatafile_parameters_source": {
+			"type": "string",
+			"defaultValue": "@triggerBody.folderpath"
+		},
+		"trigger2_properties_copydatafile_parameters_target": {
+			"type": "string",
+			"defaultValue": "@triggerBody.fileName"
+		},
+		"trigger2_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/e70f1755-b472-43ec-88ec-81172087fbf1/resourceGroups/ResouceGroup1/providers/Microsoft.Storage/storageAccounts/sammagnusst1"
+		},
+		"trigger3_properties_copydatafile_parameters_source": {
+			"type": "string",
+			"defaultValue": "@triggerBody.folderPath"
+		},
+		"trigger3_properties_copydatafile_parameters_target": {
+			"type": "string",
+			"defaultValue": "@triggerBody.fileName"
+		},
+		"trigger3_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/e70f1755-b472-43ec-88ec-81172087fbf1/resourceGroups/ResouceGroup1/providers/Microsoft.Storage/storageAccounts/sammagnusst1"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/sinkforeach')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"target": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().target",
+							"type": "Expression"
+						},
+						"container": "target"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sourcedataset1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "source"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "EMPLOYEE_ID",
+						"type": "String"
+					},
+					{
+						"name": "FIRST_NAME",
+						"type": "String"
+					},
+					{
+						"name": "LAST_NAME",
+						"type": "String"
+					},
+					{
+						"name": "EMAIL",
+						"type": "String"
+					},
+					{
+						"name": "PHONE_NUMBER",
+						"type": "String"
+					},
+					{
+						"name": "HIRE_DATE",
+						"type": "String"
+					},
+					{
+						"name": "JOB_ID",
+						"type": "String"
+					},
+					{
+						"name": "SALARY",
+						"type": "String"
+					},
+					{
+						"name": "COMMISSION_PCT",
+						"type": "String"
+					},
+					{
+						"name": "MANAGER_ID",
+						"type": "String"
+					},
+					{
+						"name": "DEPARTMENT_ID",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/sourceschemaCopying')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -141,10 +269,20 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"parameters": {
+					"source": {
+						"type": "string"
+					},
+					"target": {
+						"type": "string"
+					}
+				},
 				"annotations": [],
 				"lastPublishTime": "2024-02-17T07:35:00Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/sourcedataset1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/dboperation')]",
@@ -476,7 +614,8 @@
 				"lastPublishTime": "2024-02-18T02:07:37Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/sourceschemaCopying')]"
+				"[concat(variables('factoryId'), '/datasets/sourceschemaCopying')]",
+				"[concat(variables('factoryId'), '/datasets/sinkforeach')]"
 			]
 		},
 		{
@@ -668,7 +807,10 @@
 				"annotations": [],
 				"lastPublishTime": "2024-02-18T17:15:31Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/sourcedataset1')]",
+				"[concat(variables('factoryId'), '/datasets/sinkforeach')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/getmetadata')]",
@@ -807,7 +949,10 @@
 				"annotations": [],
 				"lastPublishTime": "2024-02-18T02:07:37Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/sourcedataset1')]",
+				"[concat(variables('factoryId'), '/datasets/sinkforeach')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/switchCase')]",
@@ -1077,7 +1222,8 @@
 				"lastPublishTime": "2024-02-20T05:35:33Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/sourceschemaCopying')]"
+				"[concat(variables('factoryId'), '/datasets/sourceschemaCopying')]",
+				"[concat(variables('factoryId'), '/datasets/sourcedataset1')]"
 			]
 		},
 		{
@@ -1339,7 +1485,8 @@
 				"lastPublishTime": "2024-02-20T06:40:34Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/sourceschemaCopying')]"
+				"[concat(variables('factoryId'), '/datasets/sourceschemaCopying')]",
+				"[concat(variables('factoryId'), '/datasets/sinkforeach')]"
 			]
 		},
 		{
@@ -1508,32 +1655,74 @@
 				"annotations": [],
 				"lastPublishTime": "2024-02-18T16:17:20Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/sourcedataset1')]",
+				"[concat(variables('factoryId'), '/datasets/sinkforeach')]"
+			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"name": "[concat(parameters('factoryName'), '/trigger2')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
 							"referenceName": "copydatafile",
 							"type": "PipelineReference"
 						},
-						"parameters": {}
+						"parameters": {
+							"source": "[parameters('trigger2_properties_copydatafile_parameters_source')]",
+							"target": "[parameters('trigger2_properties_copydatafile_parameters_target')]"
+						}
 					}
 				],
-				"type": "ScheduleTrigger",
+				"type": "BlobEventsTrigger",
 				"typeProperties": {
-					"recurrence": {
-						"frequency": "Minute",
-						"interval": 5,
-						"startTime": "2024-02-23T06:02:00",
-						"timeZone": "Central Standard Time"
+					"blobPathBeginsWith": "/source/blobs/test/azure_notes",
+					"blobPathEndsWith": "txt",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger2_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated",
+						"Microsoft.Storage.BlobDeleted"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/copydatafile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger3')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "copydatafile",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"source": "[parameters('trigger3_properties_copydatafile_parameters_source')]",
+							"target": "[parameters('trigger3_properties_copydatafile_parameters_target')]"
+						}
 					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/source/blobs/dbmetadata",
+					"blobPathEndsWith": "xlsx",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger3_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
 				}
 			},
 			"dependsOn": [

@@ -66,6 +66,30 @@
 		"linkedserviceManagedidentity_properties_typeProperties_serviceEndpoint": {
 			"type": "string",
 			"defaultValue": "https://sammagnusst1.blob.core.windows.net/"
+		},
+		"trigger2_properties_copydatafile_parameters_source": {
+			"type": "string",
+			"defaultValue": "@triggerBody.folderpath"
+		},
+		"trigger2_properties_copydatafile_parameters_target": {
+			"type": "string",
+			"defaultValue": "@triggerBody.fileName"
+		},
+		"trigger2_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/e70f1755-b472-43ec-88ec-81172087fbf1/resourceGroups/ResouceGroup1/providers/Microsoft.Storage/storageAccounts/sammagnusst1"
+		},
+		"trigger3_properties_copydatafile_parameters_source": {
+			"type": "string",
+			"defaultValue": "@triggerBody.folderPath"
+		},
+		"trigger3_properties_copydatafile_parameters_target": {
+			"type": "string",
+			"defaultValue": "@triggerBody.fileName"
+		},
+		"trigger3_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/e70f1755-b472-43ec-88ec-81172087fbf1/resourceGroups/ResouceGroup1/providers/Microsoft.Storage/storageAccounts/sammagnusst1"
 		}
 	},
 	"variables": {
@@ -142,6 +166,14 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"source": {
+						"type": "string"
+					},
+					"target": {
+						"type": "string"
+					}
 				},
 				"annotations": [],
 				"lastPublishTime": "2024-02-17T07:35:00Z"
@@ -2133,6 +2165,61 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 5,
+						"startTime": "2024-02-23T06:02:00",
+						"timeZone": "Central Standard Time"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger2')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "copydatafile",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"source": "[parameters('trigger2_properties_copydatafile_parameters_source')]",
+							"target": "[parameters('trigger2_properties_copydatafile_parameters_target')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/source/blobs/test/azure_notes",
+					"blobPathEndsWith": "txt",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger2_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated",
+						"Microsoft.Storage.BlobDeleted"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/copydatafile')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
@@ -2154,29 +2241,43 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"name": "[concat(parameters('factoryName'), '/selfhostedir')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger3')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
 							"referenceName": "copydatafile",
 							"type": "PipelineReference"
 						},
-						"parameters": {}
+						"parameters": {
+							"source": "[parameters('trigger3_properties_copydatafile_parameters_source')]",
+							"target": "[parameters('trigger3_properties_copydatafile_parameters_target')]"
+						}
 					}
 				],
-				"type": "ScheduleTrigger",
+				"type": "BlobEventsTrigger",
 				"typeProperties": {
-					"recurrence": {
-						"frequency": "Minute",
-						"interval": 5,
-						"startTime": "2024-02-23T06:02:00",
-						"timeZone": "Central Standard Time"
-					}
+					"blobPathBeginsWith": "/source/blobs/dbmetadata",
+					"blobPathEndsWith": "xlsx",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger3_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
 				}
 			},
 			"dependsOn": [
