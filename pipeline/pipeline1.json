@@ -56,6 +56,20 @@
 				]
 			}
 		],
+		"parameters": {
+			"iscopytoOutput": {
+				"type": "bool",
+				"defaultValue": true
+			},
+			"outputFolder1": {
+				"type": "string",
+				"defaultValue": "output1"
+			},
+			"outputFolder2": {
+				"type": "string",
+				"defaultValue": "output2"
+			}
+		},
 		"annotations": []
 	}
 }

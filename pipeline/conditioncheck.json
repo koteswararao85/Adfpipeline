@@ -31,7 +31,6 @@
 									"storeSettings": {
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
-										"wildcardFileName": "*",
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
@@ -69,7 +68,13 @@
 							"outputs": [
 								{
 									"referenceName": "sinckdataset",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"outputParameter": {
+											"value": "@pipeline().parameters.output1Folder",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
