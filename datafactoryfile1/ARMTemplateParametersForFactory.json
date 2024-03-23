@@ -17,6 +17,9 @@
 		"azureLinkedSource1_servicePrincipalCredential": {
 			"value": ""
 		},
+		"dynamiclinkedsqldbservice_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sqldbserverkoti.database.windows.net;Initial Catalog=sqlserverdbkoti;User ID=@{linkedService().dbusername};Password=@{linkedService().password}"
+		},
 		"linkedService1_connectionString": {
 			"value": ""
 		},

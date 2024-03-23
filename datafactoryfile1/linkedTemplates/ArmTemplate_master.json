@@ -23,6 +23,11 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalCredential' of 'azureLinkedSource1'"
 		},
+		"dynamiclinkedsqldbservice_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'dynamiclinkedsqldbservice'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sqldbserverkoti.database.windows.net;Initial Catalog=sqlserverdbkoti;User ID=@{linkedService().dbusername};Password=@{linkedService().password}"
+		},
 		"linkedService1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'linkedService1'"
@@ -129,6 +134,9 @@
 					},
 					"azureLinkedSource1_servicePrincipalCredential": {
 						"value": "[parameters('azureLinkedSource1_servicePrincipalCredential')]"
+					},
+					"dynamiclinkedsqldbservice_connectionString": {
+						"value": "[parameters('dynamiclinkedsqldbservice_connectionString')]"
 					},
 					"linkedService1_connectionString": {
 						"value": "[parameters('linkedService1_connectionString')]"
