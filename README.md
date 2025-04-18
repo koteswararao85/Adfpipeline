@@ -1,4 +1,11 @@
 # Adfpipeline
+
+"value": {
+    "value": "@json(concat('[', join(array(foreach(variables('processedQueries'), item => replace(item, concat('{', item().key, '}'), item().value))), ','), ']'))",
+    "type": "Expression"
+}
+
+
 {
     "name": "QueryParameterReplacementPipeline",
     "properties": {
