@@ -4,7 +4,7 @@
     "value": "@json(concat('[', join(array(foreach(variables('processedQueries'), item => replace(item, concat('{', item().key, '}'), item().value))), ','), ']'))",
     "type": "Expression"
 }
-
+"value": "@json(concat('[', join(array(foreach(pipeline().parameters.inputParams, item => concat('{\"key\":\"', item().key, '\",\"value\":\"', item().value, '\"}'))), ','), ']'))",
 
 {
     "name": "QueryParameterReplacementPipeline",
