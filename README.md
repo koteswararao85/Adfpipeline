@@ -27,8 +27,8 @@
                             }
                         },
                         {
-                            "name": "ProcessParameters",
-                            "type": "ForEach",
+                            "name": "ProcessQueryParameters",
+                            "type": "ExecutePipeline",
                             "dependsOn": [
                                 {
                                     "activity": "SetInitialQuery",
@@ -39,45 +39,21 @@
                             ],
                             "userProperties": [],
                             "typeProperties": {
-                                "items": {
-                                    "value": "@pipeline().parameters.parameters",
-                                    "type": "Expression"
+                                "pipeline": {
+                                    "referenceName": "ProcessQueryParameters",
+                                    "type": "PipelineReference"
                                 },
-                                "activities": [
-                                    {
-                                        "name": "CreateReplacedQuery",
-                                        "type": "SetVariable",
-                                        "dependsOn": [],
-                                        "userProperties": [],
-                                        "typeProperties": {
-                                            "variableName": "replacedQuery",
-                                            "value": {
-                                                "value": "@if(contains(variables('currentQuery'), concat('{', item().key, '}')), replace(variables('currentQuery'), concat('{', item().key, '}'), item().value), variables('currentQuery'))",
-                                                "type": "Expression"
-                                            }
-                                        }
+                                "parameters": {
+                                    "query": {
+                                        "value": "@variables('currentQuery')",
+                                        "type": "Expression"
                                     },
-                                    {
-                                        "name": "UpdateCurrentQuery",
-                                        "type": "SetVariable",
-                                        "dependsOn": [
-                                            {
-                                                "activity": "CreateReplacedQuery",
-                                                "dependencyConditions": [
-                                                    "Succeeded"
-                                                ]
-                                            }
-                                        ],
-                                        "userProperties": [],
-                                        "typeProperties": {
-                                            "variableName": "currentQuery",
-                                            "value": {
-                                                "value": "@variables('replacedQuery')",
-                                                "type": "Expression"
-                                            }
-                                        }
+                                    "parameters": {
+                                        "value": "@pipeline().parameters.parameters",
+                                        "type": "Expression"
                                     }
-                                ]
+                                },
+                                "waitOnCompletion": true
                             }
                         },
                         {
@@ -85,7 +61,7 @@
                             "type": "SetVariable",
                             "dependsOn": [
                                 {
-                                    "activity": "ProcessParameters",
+                                    "activity": "ProcessQueryParameters",
                                     "dependencyConditions": [
                                         "Succeeded"
                                     ]
@@ -95,7 +71,7 @@
                             "typeProperties": {
                                 "variableName": "processedQuery",
                                 "value": {
-                                    "value": "@variables('currentQuery')",
+                                    "value": "@activity('ProcessQueryParameters').output.processedQuery",
                                     "type": "Expression"
                                 }
                             }
@@ -148,9 +124,6 @@
                 "type": "String"
             },
             "currentQuery": {
-                "type": "String"
-            },
-            "replacedQuery": {
                 "type": "String"
             }
         },
