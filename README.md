@@ -27,8 +27,8 @@
                             }
                         },
                         {
-                            "name": "ProcessParameters",
-                            "type": "Until",
+                            "name": "ReplaceStartDate",
+                            "type": "SetVariable",
                             "dependsOn": [
                                 {
                                     "activity": "SetInitialQuery",
@@ -39,85 +39,51 @@
                             ],
                             "userProperties": [],
                             "typeProperties": {
-                                "expression": {
-                                    "value": "@not(contains(variables('currentQuery'), '{'))",
+                                "variableName": "currentQuery",
+                                "value": {
+                                    "value": "@if(contains(variables('currentQuery'), '{start_date}'), replace(variables('currentQuery'), '{start_date}', pipeline().parameters.parameters.start_date), variables('currentQuery'))",
                                     "type": "Expression"
-                                },
-                                "activities": [
-                                    {
-                                        "name": "GetParameterName",
-                                        "type": "SetVariable",
-                                        "dependsOn": [],
-                                        "userProperties": [],
-                                        "typeProperties": {
-                                            "variableName": "paramName",
-                                            "value": {
-                                                "value": "@first(split(split(variables('currentQuery'), '{')[1], '}')[0])",
-                                                "type": "Expression"
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "name": "GetParameterValue",
-                                        "type": "SetVariable",
-                                        "dependsOn": [
-                                            {
-                                                "activity": "GetParameterName",
-                                                "dependencyConditions": [
-                                                    "Succeeded"
-                                                ]
-                                            }
-                                        ],
-                                        "userProperties": [],
-                                        "typeProperties": {
-                                            "variableName": "paramValue",
-                                            "value": {
-                                                "value": "@pipeline().parameters.parameters[variables('paramName')]",
-                                                "type": "Expression"
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "name": "CreateReplacedQuery",
-                                        "type": "SetVariable",
-                                        "dependsOn": [
-                                            {
-                                                "activity": "GetParameterValue",
-                                                "dependencyConditions": [
-                                                    "Succeeded"
-                                                ]
-                                            }
-                                        ],
-                                        "userProperties": [],
-                                        "typeProperties": {
-                                            "variableName": "replacedQuery",
-                                            "value": {
-                                                "value": "@replace(variables('currentQuery'), concat('{', variables('paramName'), '}'), variables('paramValue'))",
-                                                "type": "Expression"
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "name": "UpdateCurrentQuery",
-                                        "type": "SetVariable",
-                                        "dependsOn": [
-                                            {
-                                                "activity": "CreateReplacedQuery",
-                                                "dependencyConditions": [
-                                                    "Succeeded"
-                                                ]
-                                            }
-                                        ],
-                                        "userProperties": [],
-                                        "typeProperties": {
-                                            "variableName": "currentQuery",
-                                            "value": {
-                                                "value": "@variables('replacedQuery')",
-                                                "type": "Expression"
-                                            }
-                                        }
-                                    }
-                                ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "ReplaceEndDate",
+                            "type": "SetVariable",
+                            "dependsOn": [
+                                {
+                                    "activity": "ReplaceStartDate",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "variableName": "currentQuery",
+                                "value": {
+                                    "value": "@if(contains(variables('currentQuery'), '{end_date}'), replace(variables('currentQuery'), '{end_date}', pipeline().parameters.parameters.end_date), variables('currentQuery'))",
+                                    "type": "Expression"
+                                }
+                            }
+                        },
+                        {
+                            "name": "ReplaceLob",
+                            "type": "SetVariable",
+                            "dependsOn": [
+                                {
+                                    "activity": "ReplaceEndDate",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "variableName": "currentQuery",
+                                "value": {
+                                    "value": "@if(contains(variables('currentQuery'), '{lob}'), replace(variables('currentQuery'), '{lob}', pipeline().parameters.parameters.lob), variables('currentQuery'))",
+                                    "type": "Expression"
+                                }
                             }
                         },
                         {
@@ -125,7 +91,7 @@
                             "type": "SetVariable",
                             "dependsOn": [
                                 {
-                                    "activity": "ProcessParameters",
+                                    "activity": "ReplaceLob",
                                     "dependencyConditions": [
                                         "Succeeded"
                                     ]
@@ -188,15 +154,6 @@
                 "type": "String"
             },
             "currentQuery": {
-                "type": "String"
-            },
-            "replacedQuery": {
-                "type": "String"
-            },
-            "paramName": {
-                "type": "String"
-            },
-            "paramValue": {
                 "type": "String"
             }
         },
