@@ -78,7 +78,7 @@
                                         }
                                     },
                                     {
-                                        "name": "ReplaceParameter",
+                                        "name": "CreateReplacedQuery",
                                         "type": "SetVariable",
                                         "dependsOn": [
                                             {
@@ -90,9 +90,29 @@
                                         ],
                                         "userProperties": [],
                                         "typeProperties": {
-                                            "variableName": "currentQuery",
+                                            "variableName": "replacedQuery",
                                             "value": {
                                                 "value": "@replace(variables('currentQuery'), concat('{', variables('paramName'), '}'), variables('paramValue'))",
+                                                "type": "Expression"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "UpdateCurrentQuery",
+                                        "type": "SetVariable",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "CreateReplacedQuery",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "variableName": "currentQuery",
+                                            "value": {
+                                                "value": "@variables('replacedQuery')",
                                                 "type": "Expression"
                                             }
                                         }
@@ -168,6 +188,9 @@
                 "type": "String"
             },
             "currentQuery": {
+                "type": "String"
+            },
+            "replacedQuery": {
                 "type": "String"
             },
             "paramName": {
