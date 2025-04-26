@@ -34,14 +34,34 @@
                     },
                     "activities": [
                         {
-                            "name": "ReplaceParameter",
+                            "name": "CreateTempQuery",
                             "type": "SetVariable",
                             "dependsOn": [],
                             "userProperties": [],
                             "typeProperties": {
-                                "variableName": "currentQuery",
+                                "variableName": "tempQuery",
                                 "value": {
                                     "value": "@if(contains(variables('currentQuery'), concat('{', item(), '}')), replace(variables('currentQuery'), concat('{', item(), '}'), pipeline().parameters.parameters[item()]), variables('currentQuery'))",
+                                    "type": "Expression"
+                                }
+                            }
+                        },
+                        {
+                            "name": "UpdateCurrentQuery",
+                            "type": "SetVariable",
+                            "dependsOn": [
+                                {
+                                    "activity": "CreateTempQuery",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "variableName": "currentQuery",
+                                "value": {
+                                    "value": "@variables('tempQuery')",
                                     "type": "Expression"
                                 }
                             }
@@ -80,6 +100,9 @@
         },
         "variables": {
             "currentQuery": {
+                "type": "String"
+            },
+            "tempQuery": {
                 "type": "String"
             },
             "processedQuery": {
