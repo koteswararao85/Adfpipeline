@@ -45,14 +45,34 @@
                                 },
                                 "activities": [
                                     {
-                                        "name": "ReplaceParameter",
+                                        "name": "CreateReplacedQuery",
                                         "type": "SetVariable",
                                         "dependsOn": [],
                                         "userProperties": [],
                                         "typeProperties": {
-                                            "variableName": "currentQuery",
+                                            "variableName": "replacedQuery",
                                             "value": {
                                                 "value": "@if(contains(variables('currentQuery'), concat('{', item().key, '}')), replace(variables('currentQuery'), concat('{', item().key, '}'), item().value), variables('currentQuery'))",
+                                                "type": "Expression"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "UpdateCurrentQuery",
+                                        "type": "SetVariable",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "CreateReplacedQuery",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "variableName": "currentQuery",
+                                            "value": {
+                                                "value": "@variables('replacedQuery')",
                                                 "type": "Expression"
                                             }
                                         }
@@ -128,6 +148,9 @@
                 "type": "String"
             },
             "currentQuery": {
+                "type": "String"
+            },
+            "replacedQuery": {
                 "type": "String"
             }
         },
