@@ -19,7 +19,7 @@
                             "dependsOn": [],
                             "userProperties": [],
                             "typeProperties": {
-                                "variableName": "tempQuery",
+                                "variableName": "currentQuery",
                                 "value": {
                                     "value": "@item()",
                                     "type": "Expression"
@@ -27,7 +27,7 @@
                             }
                         },
                         {
-                            "name": "CheckAndReplaceMore",
+                            "name": "ProcessParameters",
                             "type": "Until",
                             "dependsOn": [
                                 {
@@ -40,29 +40,29 @@
                             "userProperties": [],
                             "typeProperties": {
                                 "expression": {
-                                    "value": "@not(contains(variables('tempQuery'), '{'))",
+                                    "value": "@not(contains(variables('currentQuery'), '{'))",
                                     "type": "Expression"
                                 },
                                 "activities": [
                                     {
-                                        "name": "GetParamName",
+                                        "name": "GetParameterName",
                                         "type": "SetVariable",
                                         "dependsOn": [],
                                         "userProperties": [],
                                         "typeProperties": {
                                             "variableName": "paramName",
                                             "value": {
-                                                "value": "@first(split(split(variables('tempQuery'), '{')[1], '}')[0])",
+                                                "value": "@first(split(split(variables('currentQuery'), '{')[1], '}')[0])",
                                                 "type": "Expression"
                                             }
                                         }
                                     },
                                     {
-                                        "name": "GetParamValue",
+                                        "name": "GetParameterValue",
                                         "type": "SetVariable",
                                         "dependsOn": [
                                             {
-                                                "activity": "GetParamName",
+                                                "activity": "GetParameterName",
                                                 "dependencyConditions": [
                                                     "Succeeded"
                                                 ]
@@ -78,11 +78,11 @@
                                         }
                                     },
                                     {
-                                        "name": "ReplaceNextParameter",
+                                        "name": "ReplaceParameter",
                                         "type": "SetVariable",
                                         "dependsOn": [
                                             {
-                                                "activity": "GetParamValue",
+                                                "activity": "GetParameterValue",
                                                 "dependencyConditions": [
                                                     "Succeeded"
                                                 ]
@@ -90,9 +90,9 @@
                                         ],
                                         "userProperties": [],
                                         "typeProperties": {
-                                            "variableName": "tempQuery",
+                                            "variableName": "currentQuery",
                                             "value": {
-                                                "value": "@replace(variables('tempQuery'), concat('{', variables('paramName'), '}'), variables('paramValue'))",
+                                                "value": "@replace(variables('currentQuery'), concat('{', variables('paramName'), '}'), variables('paramValue'))",
                                                 "type": "Expression"
                                             }
                                         }
@@ -105,7 +105,7 @@
                             "type": "SetVariable",
                             "dependsOn": [
                                 {
-                                    "activity": "CheckAndReplaceMore",
+                                    "activity": "ProcessParameters",
                                     "dependencyConditions": [
                                         "Succeeded"
                                     ]
@@ -115,7 +115,7 @@
                             "typeProperties": {
                                 "variableName": "processedQuery",
                                 "value": {
-                                    "value": "@variables('tempQuery')",
+                                    "value": "@variables('currentQuery')",
                                     "type": "Expression"
                                 }
                             }
@@ -167,7 +167,7 @@
             "processedQuery": {
                 "type": "String"
             },
-            "tempQuery": {
+            "currentQuery": {
                 "type": "String"
             },
             "paramName": {
