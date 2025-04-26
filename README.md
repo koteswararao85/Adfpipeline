@@ -45,14 +45,54 @@
                                 },
                                 "activities": [
                                     {
-                                        "name": "ReplaceNextParameter",
+                                        "name": "GetParamName",
                                         "type": "SetVariable",
                                         "dependsOn": [],
                                         "userProperties": [],
                                         "typeProperties": {
+                                            "variableName": "paramName",
+                                            "value": {
+                                                "value": "@first(split(split(variables('tempQuery'), '{')[1], '}')[0])",
+                                                "type": "Expression"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "GetParamValue",
+                                        "type": "SetVariable",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "GetParamName",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "variableName": "paramValue",
+                                            "value": {
+                                                "value": "@pipeline().parameters.parameters[variables('paramName')]",
+                                                "type": "Expression"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "ReplaceNextParameter",
+                                        "type": "SetVariable",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "GetParamValue",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "userProperties": [],
+                                        "typeProperties": {
                                             "variableName": "tempQuery",
                                             "value": {
-                                                "value": "@replace(variables('tempQuery'), concat('{', first(split(split(variables('tempQuery'), '{')[1], '}')[0]), '}'), pipeline().parameters.parameters[first(split(split(variables('tempQuery'), '{')[1], '}')[0])])",
+                                                "value": "@replace(variables('tempQuery'), concat('{', variables('paramName'), '}'), variables('paramValue'))",
                                                 "type": "Expression"
                                             }
                                         }
@@ -128,6 +168,12 @@
                 "type": "String"
             },
             "tempQuery": {
+                "type": "String"
+            },
+            "paramName": {
+                "type": "String"
+            },
+            "paramValue": {
                 "type": "String"
             }
         },
