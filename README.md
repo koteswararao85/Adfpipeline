@@ -1,3 +1,7 @@
+ "value": "@replace(variables('processedQuery'), concat('{', first(split(split(variables('processedQuery'), '{')[1], '}')[0]), '}'), pipeline().parameters.parameters[first(split(split(variables('processedQuery'), '{')[1], '}')[0])])",
+
+
+
 {
     "name": "DynamicQueryPipeline",
     "properties": {
