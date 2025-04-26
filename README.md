@@ -1,7 +1,3 @@
- "value": "@replace(variables('processedQuery'), concat('{', first(split(split(variables('processedQuery'), '{')[1], '}')[0]), '}'), pipeline().parameters.parameters[first(split(split(variables('processedQuery'), '{')[1], '}')[0])])",
-
-"value": "@if(contains(item(), '{'), replace(item(), concat('{', first(split(split(item(), '{')[1], '}')[0]), '}'), pipeline().parameters.parameters[first(split(split(item(), '{')[1], '}')[0])]), item())",
-
 {
     "name": "DynamicQueryPipeline",
     "properties": {
@@ -18,14 +14,14 @@
                     },
                     "activities": [
                         {
-                            "name": "ReplaceParameters",
+                            "name": "SetInitialQuery",
                             "type": "SetVariable",
                             "dependsOn": [],
                             "userProperties": [],
                             "typeProperties": {
-                                "variableName": "processedQuery",
+                                "variableName": "tempQuery",
                                 "value": {
-                                    "value": "@if(contains(item(), '{'), replace(item(), '{' + first(split(split(item(), '{')[1], '}')[0]) + '}', pipeline().parameters.parameters[first(split(split(item(), '{')[1], '}')[0])]), item())",
+                                    "value": "@item()",
                                     "type": "Expression"
                                 }
                             }
@@ -35,7 +31,7 @@
                             "type": "Until",
                             "dependsOn": [
                                 {
-                                    "activity": "ReplaceParameters",
+                                    "activity": "SetInitialQuery",
                                     "dependencyConditions": [
                                         "Succeeded"
                                     ]
@@ -44,7 +40,7 @@
                             "userProperties": [],
                             "typeProperties": {
                                 "expression": {
-                                    "value": "@not(contains(variables('processedQuery'), '{'))",
+                                    "value": "@not(contains(variables('tempQuery'), '{'))",
                                     "type": "Expression"
                                 },
                                 "activities": [
@@ -54,9 +50,9 @@
                                         "dependsOn": [],
                                         "userProperties": [],
                                         "typeProperties": {
-                                            "variableName": "processedQuery",
+                                            "variableName": "tempQuery",
                                             "value": {
-                                                "value": "@replace(variables('processedQuery'), '{' + first(split(split(variables('processedQuery'), '{')[1], '}')[0]) + '}', pipeline().parameters.parameters[first(split(split(variables('processedQuery'), '{')[1], '}')[0])])",
+                                                "value": "@replace(variables('tempQuery'), concat('{', first(split(split(variables('tempQuery'), '{')[1], '}')[0]), '}'), pipeline().parameters.parameters[first(split(split(variables('tempQuery'), '{')[1], '}')[0])])",
                                                 "type": "Expression"
                                             }
                                         }
@@ -65,11 +61,31 @@
                             }
                         },
                         {
+                            "name": "SetFinalQuery",
+                            "type": "SetVariable",
+                            "dependsOn": [
+                                {
+                                    "activity": "CheckAndReplaceMore",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "variableName": "processedQuery",
+                                "value": {
+                                    "value": "@variables('tempQuery')",
+                                    "type": "Expression"
+                                }
+                            }
+                        },
+                        {
                             "name": "LogQuery",
                             "type": "WebActivity",
                             "dependsOn": [
                                 {
-                                    "activity": "CheckAndReplaceMore",
+                                    "activity": "SetFinalQuery",
                                     "dependencyConditions": [
                                         "Succeeded"
                                     ]
@@ -109,6 +125,9 @@
         },
         "variables": {
             "processedQuery": {
+                "type": "String"
+            },
+            "tempQuery": {
                 "type": "String"
             }
         },
