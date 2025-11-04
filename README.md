@@ -1,4 +1,84 @@
 
+from pyspark.sql.types import StructField, StructType, StringType, MapType, IntegerType, ArrayType
+from pyspark.sql.functions import lit, input_file_name, col
+
+PVN_AUDIT = StructType(fields=[
+    StructField('SEQ_ID', StringType(), True),
+    StructField('ACTION', StringType(), False),
+    StructField('ACTION_OPTIONS', StringType(), False),
+    StructField('ACTION_TEXT', StringType(), False),
+    StructField('CASE_CREATED_DATE', StringType(), False),
+    StructField('CASE_CREATED_TIME', StringType(), False),
+    StructField('CASE_ID', StringType(), False),
+    StructField('CASE_STATUS', StringType(), False),
+    StructField('CREATED_ON_DATE', StringType(), False),
+    StructField('CREATED_ON_TIME', StringType(), False),
+    StructField('CREATED_BY', StringType(), False),
+    StructField('DEPENDENT_ID', StringType(), False),
+    StructField('DTP_CATEGORY', StringType(), False),
+    StructField('EVENT_TYPE', StringType(), False),
+    StructField('LOB', StringType(), False),
+    StructField('MARKET', StringType(), False),
+    StructField('MASTER_MEMBER_ID', StringType(), False),
+    StructField('Member_First_Name', StringType(), False),
+    StructField('MEMBER_ID', StringType(), False),
+    StructField('Member_Last_Name', StringType(), False),
+    StructField('MEMBER_SUFFIX', StringType(), False),
+    StructField('MEMBER_DOB', StringType(), False),
+    StructField('OPPORTUNITY_ID', StringType(), False),
+    StructField('OPPORTUNITY_TYPE', StringType(), False),
+    StructField('OPPORTUNITY_SUB_TYPE', StringType(), False),
+    StructField('PAGE_NAME', StringType(), False),
+    StructField('PAYER_ID', StringType(), False),
+    StructField('PAYER_NAME', StringType(), False),
+    StructField('PCP_FIRST_NAME', StringType(), True),
+    StructField('PCP_LAST_NAME', StringType(), False),
+    StructField('PCP_NPI', StringType(), False),
+    StructField('PCP_STATE', StringType(), False),
+    StructField('POD', StringType(), False),
+    StructField('PROVIDER_APPT_TYPE', StringType(), False),
+    StructField('PROVIDER_FULL_NAME', StringType(), False),
+    StructField('PROVIDER_NPI', StringType(), False),
+    StructField('PROVIDER_PRACTICE_GROUP_ID', StringType(), False),
+    StructField('PROVIDER_PRACTICE_GROUP_NAME', StringType(), False),
+    StructField('ROLE', StringType(), False),
+    StructField('UPDATED_BY', StringType(), False),
+    StructField('UPDATED_ON', StringType(), False),
+    StructField('USER_SESSION_ID', StringType(), False),
+    StructField('AUDIT_DATA', StringType(), False)
+])
+## TODO: Figure out if Audit Data needs to be parsed
+# columns = ['SEQ_ID','ACTION','ACTION_OPTIONS','ACTION_TEXT','CASE_CREATED_DATE','CASE_CREATED_TIME','CASE_ID',
+#            'CREATED_ON_DATE','CREATED_ON_TIME','CREATED_BY','DEPENDENT_ID','DTP_CATEGORY','EVENT_TYPE',
+#            'LOB','MARKET','Member_First_Name','MASTER_MEMBER_ID','MEMBER_ID','Member_Last_Name','MEMBER_SUFFIX',
+#            'MEMBER_DOB','OPPORTUNITY_TYPE','OPPORTUNITY_SUB_TYPE','PAGE_NAME','PAYER_ID','PAYER_NAME',
+#            'PCP_FIRST_NAME','PCP_LAST_NAME','PCP_NPI','PCP_STATE','POD','PROVIDER_APPT_TYPE','PROVIDER_FULL_NAME',
+#            'PROVIDER_NPI','PROVIDER_PRACTICE_GROUP_ID','PROVIDER_PRACTICE_GROUP_NAME','ROLE','UPDATED_BY',
+#            'UPDATED_ON','USER_SESSION_ID','AUDIT_DATA']
+def apply_schema_to_dataframe(df, schema):
+    for field in schema.fields:
+        df = df.withColumn(field.name, col(field.name).cast(field.dataType))
+    return df
+
+def model(dbt, session):
+    dbt.config(
+        materialized="table",
+        format="delta",
+        schema="bronze",
+        incremental_strategy='append'
+    )
+
+    file_path = dbt.config.get('landingzone')
+    jsondf = session.read.option("recursiveFileLookup", "true").schema(PVN_AUDIT).load(file_path, format="json", pathGlobFilter="*.json")
+    csvdf = session.read.option("recursiveFileLookup", "true").option("enforceSchema", False).format("csv").schema(PVN_AUDIT).option("header", True).option('delimiter',',').load(file_path, pathGlobFilter="*.csv")
+    csvdf.drop('AUDIT_DATA')
+    df = jsondf.union(csvdf)
+    new_col = df.withColumn('SOURCE_SYSTEM', lit("PVN"))
+    result = new_col.withColumn("FILE_NAME", input_file_name())
+
+    return result
+
+/Users/kpuchaka/IdeaProjerefacto_prd/magnus-dbt-dw/models/bronze/raw/pvn/pepAudit.py
  {% macro handle_mv_refresh_conflict(mv_name, max_wait_minutes=30) %}
     {% set check_running_sql %}
         SHOW MATERIALIZED VIEWS LIKE '{{ mv_name }}'
